@@ -7,8 +7,10 @@ import InputAdornment from '@mui/material/InputAdornment'
 import Switch from '@mui/material/Switch'
 
 import { useAppSelector, useAppDispatch } from '../../hooks/redux-hooks'
+import { updateProductAttributesAction } from '../../redux/actions/product'
 
 function MainPage() {
+    const dispatch = useAppDispatch()
     const productState = useAppSelector(state => state.productReducer)
     let productItems = []
     let productAttributes = []
@@ -22,6 +24,8 @@ function MainPage() {
     const [selectedProductAttributesWithMissing, setSelectedProductAttributesWithMissing] = useState(
         {},
     )
+    const [updatedProductAttributes, setUpdatedProductAttributes] = useState({})
+
     const [selectedFamilyConfig, setSelectedFamilyConfig] = useState({})
     const [missingChecked, setMissingChecked] = React.useState(true)
 
@@ -39,12 +43,24 @@ function MainPage() {
             productState.config[
                 productState.products[selectedProductIndex].family
             ]
-            // console.log('selectedFamilyConfig', selectedFamilyConfig)
             setSelectedFamilyConfig(selectedFamilyConfig)
             
         let productAttributesObject = JSON.parse(
             JSON.stringify(productState.products[selectedProductIndex]),
         )
+
+        console.log(productAttributesObject)
+
+        let orderedProductAttributesObject = Object.keys(productAttributesObject).sort(function(a,b) { return (a.toLowerCase() < b.toLowerCase()) ? -1 : 1;}).reduce(
+            (obj, key) => { 
+              obj[key] = productAttributesObject[key]; 
+              return obj;
+            }, 
+            {}
+          );
+
+        productAttributesObject = orderedProductAttributesObject
+        console.log(orderedProductAttributesObject)
         
         let productRequiredAttributes = {...productAttributesObject}
         
@@ -79,17 +95,25 @@ function MainPage() {
 
 
     const handleProductAttributeValue = (key, value) => {
-        let updatedProductAttributes = {
-            ...selectedProductAttributes,
+        setSelectedProductAttributesWithMissing({
+            ...selectedProductAttributesWithMissing,
             [key]: value,
-        }
-        setSelectedProductAttributesWithMissing(updatedProductAttributes)
+        })
+        setUpdatedProductAttributes({
+            ...updatedProductAttributes,
+            [key]: value,
+        })
     }
-
-
 
     const handleMissingCheck = event => {
         setMissingChecked(event.target.checked)
+    }
+
+    const handleUpdate = event => {
+
+        dispatch(updateProductAttributesAction(productId, updatedProductAttributes))
+        setUpdatedProductAttributes({})
+
     }
 
     if (productState && !productState.isFamilyLoading) {
@@ -129,11 +153,14 @@ function MainPage() {
                 label={key}
                 sx={{ minWidth: 250, m: 1 }}
                 value={value}
+                InputProps={{
+                    readOnly: true,
+                  }}
                 onChange={e => handleProductAttributeValue(key, e.target.value)}
             />
         ),
     )
-    console.log("Product attributes text field:", productAttributes)
+    // console.log("Product attributes text field:", productAttributes)
 
     // async function getMenuItems(family, attribute) {
     //     let data = {}
@@ -260,7 +287,7 @@ function MainPage() {
                                             justifyContent: 'center',
                                         }}
                                     >
-                                        Missing_Attributes
+                                        View Missing Attributes
                                     </Typography>
 
                                     <Switch
@@ -268,6 +295,7 @@ function MainPage() {
                                         onChange={handleMissingCheck}
                                     />
                                 </Stack>
+                                { missingChecked &&
                                 <Button
                                     variant="contained"
                                     color="primary"
@@ -277,9 +305,10 @@ function MainPage() {
                                         display: { md: 'flex' },
                                         justifyContent: 'center',
                                     }}
+                                    onClick={handleUpdate}
                                 >
                                     Update
-                                </Button>
+                                </Button>}
                             </Box>
                         )}
                     </form>

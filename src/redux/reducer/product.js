@@ -6,12 +6,15 @@ const initialState = {
     isBrandLoading: false,
     isConfigLoading : false, 
     isCategoryLoading: false,
+    isAttributeUpdating: false,
     family: [],
     products: [],
     brand: [],
     category: [],
     config: {},
-    distinctFamilyAttributes : {}
+    distinctFamilyAttributes : {},
+    message :"", 
+    isError: false
 }
 
 export const productReducer = createSlice({
@@ -119,6 +122,32 @@ export const productReducer = createSlice({
             }
         },
 
+        updateAttributes(state, action) {
+            return {
+                ...state,
+                isAttributeUpdating: true,
+                message: "", 
+                isError: false,
+            }
+        },
+        updateAttributesSuccess(state, action) {
+            // console.log('Category:', action.payload)
+            return {
+                ...state,
+                isAttributeUpdating: false,
+                message: "Attributes Updated",
+                isError: false,
+            }
+        },
+        updateAttributesFailed(state, action) {
+            return {
+                ...state,
+                message: 'Update Attributes Failed',
+                isError: true,
+                isAttributeUpdating: false,
+            }
+        },
+
 
 
 
@@ -219,6 +248,9 @@ export const {
     fetchCategory,
     fetchCategorySuccess,
     fetchCategoryFailed,
+    updateAttributes,
+    updateAttributesSuccess,
+    updateAttributesFailed,
     fetchConfig, 
     fetchConfigSuccess, 
     fetchConfigFailed, 

@@ -68,9 +68,9 @@ const TopBar = () => {
                             fontFamily: 'roboto',
                             color: 'inherit',
                             textDecoration: 'none',
-                        }}
+                        }}  
                     >
-                        PRODUCT ATTRIBUTE LABELLING
+                        Product Attribute Labelling
                     </Typography>
 
                     <Box

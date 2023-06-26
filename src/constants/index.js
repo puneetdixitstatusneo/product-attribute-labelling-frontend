@@ -4,5 +4,6 @@ export const CHANGE_PASSWORD = '/auth/change_password'
 export const REFREST_TOKEN = '/auth/refresh'
 
 
-export const PRODUCT = '/pal/products'
+export const PRODUCT = '/pal/product'
+export const PRODUCTS = '/pal/products'
 export const CONFIG = '/pal/configs'
