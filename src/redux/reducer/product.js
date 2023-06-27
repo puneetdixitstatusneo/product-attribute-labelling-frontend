@@ -197,27 +197,11 @@ export const productReducer = createSlice({
                 isError: false,
             }
         },
-        fetchDistinctFamilyAttributesSuccess(state, action) {
-            // console.log('DistinctFamilyAttributes Attribute:', action.payload.attribute)
-            // console.log('DistinctFamilyAttributes Response:', action.payload.response)
-            const distinctFamilyAttributesforSingleField = { }
-            distinctFamilyAttributesforSingleField[action.payload.attribute] = action.payload.response 
-
-            // console.log("distinctFamilyAttributesforSingleField", distinctFamilyAttributesforSingleField)
-
-
-            console.log("state.distinctFamilyAttributes", state.distinctFamilyAttributes)
-            // const existingUsers = JSON.parse(JSON.stringify(state.distinctFamilyAttributes));
-            // const newUsers = [...existingUsers, distinctFamilyAttributesforSingleField];
-            // state.users= newUsers;
-            // console.log("newUsers", newUsers)
-            
-            // console.log("...state", ...state.distinctFamilyAttributes)
-
+        fetchDistinctFamilyAttributesSuccess(state, action) {    
             return {
                 ...state,
                 isDistinctFamilyAttributesLoading: false,
-                distinctFamilyAttributes: {...state.distinctFamilyAttributes, ...{distinctFamilyAttributesforSingleField}},
+                distinctFamilyAttributes: action?.payload,
                 isError: false,
             }
         },
